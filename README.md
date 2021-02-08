@@ -6,6 +6,7 @@ Source is a single operable file **scanty.py**
 
 **Currently supported commands:**
 ```console
+cat
 cd
 cls
 commands
@@ -21,7 +22,6 @@ setprompt
 
 *Commands*
 ```console
-cat
 cp
 mv
 grep

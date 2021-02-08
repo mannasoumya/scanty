@@ -14,9 +14,10 @@ help_cmd = {
     "commands" : "Get List of All Commands",
     "exit" : "Exit Console",
     "cls" : "Clear The Screen",
-    "cd" : "Change Directory",
+    "cd" : "Change Directory -> Multi Directory Traversal with slashes may be faulty",
     "setprompt" : "Set prefix of Current Prompt",
-    "pwd" : "Print the Current Working Directory"
+    "pwd" : "Print the Current Working Directory",
+    "cat" : "Show the Contents of a file -> UTF like readable files(non-binaries)"
 }
 
 pwd = os.getcwd()
@@ -30,7 +31,8 @@ cmd_dct = {
     "cls": "os.system('cls') if os.name=='nt' else os.system('clear')",
     "exit": "sys.exit(1)",
     "setprompt" : "prompt_prefix='{arg} '",
-    "pwd" : "os.getcwd()"
+    "pwd" : "os.getcwd()",
+    "cat" : """\nf=open('{arg}','r')\nprint(f.read())\nf.close()\n"""
 }
 
 while True:
@@ -46,17 +48,16 @@ while True:
                 eval(console_command)
                 pwd = prompt_prefix + os.getcwd()
 
-            if command == "setprompt":
+            if command == "setprompt" or command == "cat":
                 exec(console_command)
                 pwd = prompt_prefix + os.getcwd()
 
-            elif isinstance(eval(cmd_dct[command]), list):
+            if isinstance(eval(cmd_dct[command]), list):
                 for item in eval(cmd_dct[command]):
                     print(item)
-
-            elif isinstance(eval(console_command), str) == True:
+            
+            if isinstance(eval(console_command), str) == True:
                 print(eval(console_command))
-
             else:
                 eval(console_command)
 

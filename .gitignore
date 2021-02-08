@@ -1,2 +1,4 @@
 __pycache__/
 scanty_draft.py
+drafts/*
+drafts/

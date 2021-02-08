@@ -25,6 +25,7 @@ cat
 cp
 mv
 grep
+.\*.exe
 .... suggest more here
 ```
 *Refactoring*

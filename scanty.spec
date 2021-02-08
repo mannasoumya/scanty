@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['scanty.py'],
-             pathex=['C:\\Users\\A2240\\Desktop\\simp-console'],
+             pathex=['D:\\coding\\scanty'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=True )
+          console=True , icon='icon.ico')

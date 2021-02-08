@@ -11,9 +11,12 @@ def contains_explicit_return(f):
 help_cmd = {
     "ls": "List all files and directories in current path",
     "lsdir": "List all directories in current path",
-    "commands":"Get List of All Commands",
-    "exit":"Exit Console",
-    "cls":"Clear The Screen"
+    "commands" : "Get List of All Commands",
+    "exit" : "Exit Console",
+    "cls" : "Clear The Screen",
+    "cd" : "Change Directory",
+    "setprompt" : "Set prefix of Current Prompt",
+    "pwd" : "Print the Current Working Directory"
 }
 
 pwd = os.getcwd()
@@ -60,6 +63,6 @@ while True:
         elif command.strip() == '':
             pass
         else:
-            print("Command Not Found !! Type 'commands' to get a list of commands ")
+            print("Command Not Found !! Type 'commands' to get a list of commands. Type 'help <command>' to get Help on the command")
     except Exception as e:
         pass

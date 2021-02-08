@@ -2,22 +2,11 @@ import os
 import sys
 import ast
 import inspect
-# from prompt_toolkit.key_binding import KeyBindings
-# from prompt_toolkit.key_binding.bindings.basic import load_basic_bindings
-
-# bindings = KeyBindings()
-# bindings = load_basic_bindings()
-
-# @bindings.add('c-u')
-# def _(event):
-#     print(os.listdir())
 
 print("\n\n\n\t scanty is here !!!\n\n\n")
 
-
 def contains_explicit_return(f):
     return any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(f))))
-
 
 help_cmd = {
     "ls": "List all files and directories in current path",
@@ -50,7 +39,6 @@ while True:
     try:
         if command in cmd_dct and command.strip() != '':
             console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
-            # print(console_command)
             if command == "cd":
                 eval(console_command)
                 pwd = prompt_prefix + os.getcwd()
@@ -67,8 +55,6 @@ while True:
                 print(eval(console_command))
 
             else:
-                # print(type(eval(cmd_dct[command])))
-                # print("here")
                 eval(console_command)
 
         elif command.strip() == '':

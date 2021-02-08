@@ -15,10 +15,11 @@ setprompt
 ```
 
 **TODO**
-```
+```console
 cat
 cp
 mv
 grep
-```
 .... suggest more here
+```
+

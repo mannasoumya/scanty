@@ -14,6 +14,7 @@ exit
 help
 ls
 lsdir
+mkdir
 pwd
 setprompt
 ```
@@ -25,6 +26,7 @@ setprompt
 cp
 mv
 grep
+rm
 .\*.exe
 .... suggest more here
 ```

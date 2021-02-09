@@ -37,6 +37,20 @@ cmd_dct = {
     "mkdir" : "os.mkdir('{arg}')"
 }
 
+cmd_args_limit={
+    "ls" : 0,
+    "commands" : 0,
+    "cd" : 1,
+    "lsdir" : 0,
+    "help" : 1,
+    "cls" : 0,
+    "exit" : 0,
+    "setprompt" : 1,
+    "pwd" : 0,
+    "cat" : 1,
+    "mkdir" : 1
+}
+
 while True:
     sys.stdout.write(pwd+"> ")
     inp = input()
@@ -45,24 +59,34 @@ while True:
     command = command_tokens[0]
     try:
         if command in cmd_dct and command.strip() != '':
-            console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
-            if command == "cd":
-                eval(console_command)
-                pwd = prompt_prefix + os.getcwd()
+            arg_limit=cmd_args_limit[command]
+            if arg_limit == len(command_tokens) - 1:
+                console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
+                if command == "cd":
+                    eval(console_command)
+                    pwd = prompt_prefix + os.getcwd()
 
-            if command == "setprompt" or command == "cat":
-                exec(console_command)
-                pwd = prompt_prefix + os.getcwd()
+                if command == "setprompt" or command == "cat":
+                    exec(console_command)
+                    pwd = prompt_prefix + os.getcwd()
 
-            if len(command_tokens) < 2: #ls lsdir
-                if isinstance(eval(cmd_dct[command]), list):
-                    for item in eval(cmd_dct[command]):
-                        print(item)
-                
-            if isinstance(eval(console_command), str) == True:
-                print(eval(console_command))
+                if len(command_tokens) < 2: #ls lsdir
+                    if isinstance(eval(cmd_dct[command]), list):
+                        for item in eval(cmd_dct[command]):
+                            print(item)
+                    
+                if isinstance(eval(console_command), str) == True:
+                    print(eval(console_command))
+                else:
+                    eval(console_command)
             else:
-                eval(console_command)
+                if arg_limit == 0:
+                    limit_msg_suffix = "no arguments"
+                elif arg_limit == 1:
+                    limit_msg_suffix = "exactly 1 argument"
+                else:
+                    limit_msg_suffix = f"exactly {str(arg_limit)} arguments"
+                print("'"+command+"' accepts "+limit_msg_suffix)
 
         elif command.strip() == '':
             pass

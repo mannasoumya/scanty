@@ -8,6 +8,24 @@ print("\n\n\n\t scanty is here !!!\n\n\n")
 def contains_explicit_return(f):
     return any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(f))))
 
+def basic_tokenizer(command,separator):
+    tokens = []
+    fi = -1
+    li = -1
+    for i in range(0, len(command)):
+        if command!='':
+            l = len(command)
+            if command[i] == separator:
+                fi = i
+            k = fi+1
+            for j in range(k, len(command)):
+                if command[j] == separator:
+                    li = j
+                    tokens.append(command[fi+1:li])
+                    break
+            command = command[li+1:l]
+    return tokens
+
 help_cmd = {
     "ls": "List all files and directories in current path",
     "lsdir": "List all directories in current path",
@@ -23,6 +41,7 @@ help_cmd = {
 
 pwd = os.getcwd()
 prompt_prefix = ""
+
 cmd_dct = {
     "ls" : "os.listdir()",
     "commands" : "sorted(list(cmd_dct.keys()))",
@@ -57,11 +76,24 @@ while True:
     inp = inp.strip()
     command_tokens = inp.split(" ")
     command = command_tokens[0]
+    need_to_be_tokenized = False
+    if "".join(command_tokens[1:]).find("'") != -1:
+        need_to_be_tokenized = True
+    tokenizer_result = basic_tokenizer(" ".join(command_tokens[1:]),"'") if need_to_be_tokenized == True else []
     try:
         if command in cmd_dct and command.strip() != '':
             arg_limit=cmd_args_limit[command]
-            if arg_limit == len(command_tokens) - 1:
-                console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
+            number_of_args = -1
+            if need_to_be_tokenized == False:
+                number_of_args = len(command_tokens) - 1
+            else:
+                number_of_args = len(tokenizer_result)
+
+            if arg_limit == number_of_args:
+                if len(tokenizer_result) == 0:
+                    console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
+                else:
+                    console_command = cmd_dct[command].format(arg=" ".join(tokenizer_result))
                 if command == "cd":
                     eval(console_command)
                     pwd = prompt_prefix + os.getcwd()

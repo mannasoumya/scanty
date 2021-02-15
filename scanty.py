@@ -26,6 +26,11 @@ def basic_tokenizer(command,separator):
             command = command[li+1:l]
     return tokens
 
+def spawn_list(a_):
+    if isinstance(a_,list):
+        return a_
+    return []
+
 help_cmd = {
     "ls": "List all files and directories in current path",
     "lsdir": "List all directories in current path",
@@ -36,11 +41,14 @@ help_cmd = {
     "setprompt" : "Set prefix of Current Prompt",
     "pwd" : "Print the Current Working Directory",
     "cat" : "Show the Contents of a file -> UTF like readable files(non-binaries)",
-    "mkdir" : "Create New Folder -> Recursive Directory Creation not yet supported"
+    "mkdir" : "Create New Folder -> Recursive Directory Creation not yet supported",
+    "history" : "Get History of all commands typed"
 }
 
 pwd = os.getcwd()
 prompt_prefix = ""
+command_history = []
+command_count = 0
 
 cmd_dct = {
     "ls" : "os.listdir()",
@@ -53,7 +61,8 @@ cmd_dct = {
     "setprompt" : "prompt_prefix='{arg} '",
     "pwd" : "os.getcwd()",
     "cat" : """\nf=open('{arg}','r')\nprint(f.read())\nf.close()\n""",
-    "mkdir" : "os.mkdir('{arg}')"
+    "mkdir" : "os.mkdir('{arg}')",
+    "history" : "spawn_list(command_history)"
 }
 
 cmd_args_limit={
@@ -67,13 +76,16 @@ cmd_args_limit={
     "setprompt" : 1,
     "pwd" : 0,
     "cat" : 1,
-    "mkdir" : 1
+    "mkdir" : 1,
+    "history" : 0
 }
 
 while True:
     sys.stdout.write(pwd+"> ")
     inp = input()
     inp = inp.strip()
+    command_count = command_count + 1
+    command_history.append(f"{str(command_count)}. {inp}")
     command_tokens = inp.split(" ")
     command = command_tokens[0]
     need_to_be_tokenized = False

@@ -5,13 +5,14 @@
 Source is a single operable file **scanty.py**. 
 
 #### Currently supported commands:
-```c
+```console
 cat
 cd
 cls
 commands
 exit
 help
+history
 ls
 lsdir
 mkdir
@@ -23,8 +24,10 @@ setprompt
 
 *I: Tab completion of commands and arguments*
 
-*II: Commands*
-```c
+*II: Redirecting standard output to file using the '>' and appending to file using '>>' operator*
+
+*III: Commands*
+```console
 cp
 mv
 grep
@@ -33,7 +36,7 @@ rm
 .... suggest more here
 ```
 
-*III: Refactoring*
+*IV: Refactoring*
 
 Rewriting using **python-prompt-toolkit** found <a href="https://github.com/prompt-toolkit/python-prompt-toolkit">here</a>.
 Maybe console colors someday

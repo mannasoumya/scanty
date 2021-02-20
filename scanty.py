@@ -47,19 +47,20 @@ help_cmd = {
 
 pwd = os.getcwd()
 prompt_prefix = ""
+pwd_show = prompt_prefix + pwd
 command_history = []
 command_count = 0
 
 cmd_dct = {
-    "ls" : "os.listdir()",
+    "ls" : "os.listdir(pwd)",
     "commands" : "sorted(list(cmd_dct.keys()))",
-    "cd" : "os.chdir('{arg}')",
-    "lsdir" : "list(filter(os.path.isdir, os.listdir()))",
+    "cd" : "chng_dir(\"{arg}\")",
+    "lsdir" : "[f.name for f in os.scandir(pwd) if f.is_dir()]",
     "help" : "help_cmd.get('{arg}')",
     "cls" : "os.system('cls') if os.name=='nt' else os.system('clear')",
     "exit" : "sys.exit(1)",
     "setprompt" : "prompt_prefix='{arg} '",
-    "pwd" : "os.getcwd()",
+    "pwd" : "pwd",
     "cat" : """\nf=open('{arg}','r')\nprint(f.read())\nf.close()\n""",
     "mkdir" : "os.mkdir('{arg}')",
     "history" : "spawn_list(command_history)"
@@ -81,7 +82,7 @@ cmd_args_limit={
 }
 
 while True:
-    sys.stdout.write(pwd+"> ")
+    sys.stdout.write(pwd_show+"> ")
     inp = input()
     inp = inp.strip()
     command_count = command_count + 1
@@ -107,12 +108,13 @@ while True:
                 else:
                     console_command = cmd_dct[command].format(arg=" ".join(tokenizer_result))
                 if command == "cd":
-                    eval(console_command)
-                    pwd = prompt_prefix + os.getcwd()
-
+                    exec(console_command, {"chng_dir":os.chdir})
+                    pwd = os.getcwd()
+                    pwd_show = prompt_prefix + pwd
+                    
                 if command == "setprompt" or command == "cat":
                     exec(console_command)
-                    pwd = prompt_prefix + os.getcwd()
+                    pwd_show = prompt_prefix + os.getcwd()
 
                 if len(command_tokens) < 2: #ls lsdir
                     if isinstance(eval(cmd_dct[command]), list):

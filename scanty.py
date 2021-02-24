@@ -2,8 +2,15 @@ import os
 import sys
 import ast
 import inspect
+from pyreadline import Readline
 
-print("\n\n\n\t scanty is here !!!\n\n\n")
+print("""
+        scanty is here !!!
+
+           Press <tab> 
+        for AutoCompletion
+        
+        """)
 
 def contains_explicit_return(f):
     return any(isinstance(node, ast.Return) for node in ast.walk(ast.parse(inspect.getsource(f))))
@@ -31,6 +38,15 @@ def spawn_list(a_):
         return a_
     return []
 
+files_list = []
+readline = Readline()
+def completer(text, state):
+    options = [i for i in files_list if i.startswith(text)]
+    if state < len(options):
+        return options[state]
+    else:
+        return None
+
 help_cmd = {
     "ls": "List all files and directories in current path",
     "lsdir": "List all directories in current path",
@@ -42,7 +58,8 @@ help_cmd = {
     "pwd" : "Print the Current Working Directory",
     "cat" : "Show the Contents of a file -> UTF like readable files(non-binaries)",
     "mkdir" : "Create New Folder -> Recursive Directory Creation not yet supported",
-    "history" : "Get History of all commands typed"
+    "history" : "Get History of all commands typed",
+    "run" : "Run a executable or file in native system from Scanty"
 }
 
 pwd = os.getcwd()
@@ -63,7 +80,8 @@ cmd_dct = {
     "pwd" : "pwd",
     "cat" : """\nf=open('{arg}','r')\nprint(f.read())\nf.close()\n""",
     "mkdir" : "os.mkdir('{arg}')",
-    "history" : "spawn_list(command_history)"
+    "history" : "spawn_list(command_history)",
+    "run" : "os.system('{arg}') if '{arg}'!='scanty.exe' else 'You are already running scanty...'"
 }
 
 cmd_args_limit={
@@ -78,12 +96,21 @@ cmd_args_limit={
     "pwd" : 0,
     "cat" : 1,
     "mkdir" : 1,
-    "history" : 0
+    "history" : 0,
+    "run" : 1
 }
 
 while True:
-    sys.stdout.write(pwd_show+"> ")
-    inp = input()
+    # sys.stdout.write(pwd_show+"> ")
+    files_list=[]
+    readline.parse_and_bind("tab: complete")
+    for f in list(os.listdir(pwd)):
+        if f.find(" ")!= -1:
+            f="'"+f+"'"
+        files_list.append(f)
+    readline.set_completer(completer)
+    # inp = input()
+    inp = readline.readline(pwd_show +"> ")
     inp = inp.strip()
     command_count = command_count + 1
     command_history.append(f"{str(command_count)}. {inp}")
@@ -107,6 +134,7 @@ while True:
                     console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
                 else:
                     console_command = cmd_dct[command].format(arg=" ".join(tokenizer_result))
+    
                 if command == "cd":
                     exec(console_command, {"chng_dir":os.chdir})
                     pwd = os.getcwd()
@@ -120,8 +148,8 @@ while True:
                     if isinstance(eval(cmd_dct[command]), list):
                         for item in eval(cmd_dct[command]):
                             print(item)
-                    
-                if isinstance(eval(console_command), str) == True:
+
+                if command!='run' and isinstance(eval(console_command), str) == True:
                     print(eval(console_command))
                 else:
                     eval(console_command)

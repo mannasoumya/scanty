@@ -17,12 +17,15 @@ ls
 lsdir
 mkdir
 pwd
+run
 setprompt
 ```
 
+**Tab completion of arguments:**
+
+
 #### TODO:
 
-*I: Tab completion of commands and arguments*
 
 *II: Redirecting standard output to file using the '>' and appending to file using '>>' operator*
 
@@ -32,7 +35,6 @@ cp
 mv
 grep
 rm
-.\*.exe
 .... suggest more here
 ```
 

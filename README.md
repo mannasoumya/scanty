@@ -21,11 +21,14 @@ run
 setprompt
 ```
 
-**Tab completion of arguments:**
+**Tab completion of arguments**
+
+Press `<Tab>` for autocompletion of Files 
 
 
 #### TODO:
 
+*I:  Tab Completion Enhancements*
 
 *II: Redirecting standard output to file using the '>' and appending to file using '>>' operator*
 

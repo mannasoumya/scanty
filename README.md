@@ -28,11 +28,9 @@ Press `<Tab>` for autocompletion of Files
 
 #### TODO:
 
-*I:  Tab Completion Enhancements*
+*I: Redirecting standard output to file using the '>' and appending to file using '>>' operator*
 
-*II: Redirecting standard output to file using the '>' and appending to file using '>>' operator*
-
-*III: Commands*
+*II: Commands*
 ```console
 cp
 mv

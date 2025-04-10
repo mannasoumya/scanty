@@ -2,14 +2,27 @@ import os
 import sys
 import ast
 import inspect
-from pyreadline import Readline
+# from pyreadline import Readline
+
+if os.name == 'nt':  # Windows
+    try:
+        from pyreadline3 import Readline
+        readline = Readline()
+    except ImportError:
+        print("Please install pyreadline3: pip install pyreadline3")
+        sys.exit(1)
+else:  # macOS and Unix systems
+    import readline
+    import rlcompleter
+    readline.parse_and_bind("bind ^I rl_complete" if sys.platform == 'darwin' else "tab: complete")
+
 
 print("""
         scanty is here !!!
 
-           Press <tab> 
+           Press <tab>
         for AutoCompletion
-        
+
         """)
 
 def contains_explicit_return(f):
@@ -39,7 +52,6 @@ def spawn_list(a_):
     return []
 
 files_list = []
-readline = Readline()
 def completer(text, state):
     options = [i for i in files_list if i.startswith(text)]
     if state < len(options):
@@ -59,7 +71,7 @@ help_cmd = {
     "cat" : "Show the Contents of a file -> UTF like readable files(non-binaries)",
     "mkdir" : "Create New Folder -> Recursive Directory Creation not yet supported",
     "history" : "Get History of all commands typed",
-    "run" : "Run a executable or file in native system from Scanty"
+    "run" : "Run a executable/file/file system commands in native system from Scanty"
 }
 
 pwd = os.getcwd()
@@ -97,20 +109,21 @@ cmd_args_limit={
     "cat" : 1,
     "mkdir" : 1,
     "history" : 0,
-    "run" : 1
+    "run" : 1000
 }
 
 while True:
     # sys.stdout.write(pwd_show+"> ")
     files_list=[]
-    readline.parse_and_bind("tab: complete")
+    readline.parse_and_bind("bind ^I rl_complete" if sys.platform == 'darwin' else "tab: complete")
     for f in list(os.listdir(pwd)):
         if f.find(" ")!= -1:
             f="'"+f+"'"
         files_list.append(f)
     readline.set_completer(completer)
     # inp = input()
-    inp = readline.readline(pwd_show +"> ")
+    # inp = readline.Readline.readline(pwd_show +"> ")
+    inp = input(pwd_show +"> ")
     inp = inp.strip()
     command_count = command_count + 1
     command_history.append(f"{str(command_count)}. {inp}")
@@ -129,17 +142,21 @@ while True:
             else:
                 number_of_args = len(tokenizer_result)
 
+            if arg_limit > number_of_args:
+                console_command = cmd_dct[command].format(arg=" ".join(command_tokens[1:]))
+                eval(console_command)
+                continue
             if arg_limit == number_of_args:
                 if len(tokenizer_result) == 0:
                     console_command = cmd_dct[command].format(arg="".join(command_tokens[1:]))
                 else:
                     console_command = cmd_dct[command].format(arg=" ".join(tokenizer_result))
-    
+
                 if command == "cd":
                     exec(console_command, {"chng_dir":os.chdir})
                     pwd = os.getcwd()
                     pwd_show = prompt_prefix + pwd
-                    
+
                 if command == "setprompt" or command == "cat":
                     exec(console_command)
                     pwd_show = prompt_prefix + os.getcwd()
